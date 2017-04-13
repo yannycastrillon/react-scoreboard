@@ -18,9 +18,18 @@ var PLAYERS = [
 ];
 
 // Define type of properies the component Applicaton.
+/*
+* Application takes a title, which is a string and no required.
+* Application also takes a Players property which is an array of objects with shape of:
+* name: Which is a string and required. score: Which is a number and required.
+*/
 Application.propTypes = {
-  title: React.PropTypes.string, //isRequired, // title must be a string. Must be required
-  players: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+  title: React.PropTypes.string,
+  // shape describe the attributes of the object property.
+  players: React.PropTypes.arrayOf(React.PropTypes.shape({
+    name:  React.PropTypes.string.isRequired,
+    score: React.PropTypes.number.isRequired,
+  })).isRequired,
 };
 
 // Define type of properies the component Header.
