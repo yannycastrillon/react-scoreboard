@@ -1,19 +1,23 @@
 var PLAYERS = [
   {
     name: "Yanny Castrillon",
-    score: 35
+    score: 35,
+    id:1
   },
   {
     name: "Alejandra Castrillon",
-    score: 30
+    score: 30,
+    id:2
   },
   {
     name: "Julian Castrillon",
-    score: 42
+    score: 42,
+    id:3
   },
   {
     name: "Luis Castrillon",
-    score: 28
+    score: 28,
+    id:4
   },
 ];
 
@@ -29,6 +33,7 @@ Application.propTypes = {
   players: React.PropTypes.arrayOf(React.PropTypes.shape({
     name:  React.PropTypes.string.isRequired,
     score: React.PropTypes.number.isRequired,
+    id:    React.PropTypes.number.isRequired,
   })).isRequired,
 };
 
@@ -43,10 +48,8 @@ Player.propTypes = {
   score: React.PropTypes.number
 }
 
-// Define properties of component Player.
-Counter.propTypes = {
-  score: React.PropTypes.number,
-}
+
+
 
 // Define all default values properties of the application component.
 Application.defaultProps = {
@@ -63,16 +66,41 @@ function Header(props){
     </div>
   );
 }
+const Counter = React.createClass({
+  // Define properties of component Player.
+  propTypes: {
+    initialScore : React.PropTypes.number.isRequired
+  },
 
-function Counter(props){
-  return(
-    <div className="counter">
-      <button className="counter-action decrement"> - </button>
-      <div className="counter-score"> {props.score} </div>
-      <button className="counter-action increment"> + </button>
-    </div>
-  );
-}
+  getInitialState: function(){
+    return {
+      score: this.props.initialScore,
+    }
+  },
+
+  incrementScore: function(e){
+    this.setState({
+      score: (this.state.score+1),
+    })
+  },
+
+  decrementScore: function(e){
+    this.setState({
+      score: (this.state.score-1),
+    })
+  },
+
+  // Return a virtual DOM
+  render: function(){
+    return(
+      <div className="counter">
+        <button className="counter-action decrement" onClick={this.decrementScore}> - </button>
+        <div className="counter-score"> {this.state.score} </div>
+        <button className="counter-action increment" onClick={this.incrementScore}> + </button>
+      </div>
+    );
+  }
+})
 
 function Player(props){
   return(
@@ -81,7 +109,7 @@ function Player(props){
         {props.name}
       </div>
       <div className="player-score">
-        <Counter score={props.score}/>
+        <Counter initialScore={props.score}/>
       </div>
     </div>
   );
@@ -92,10 +120,9 @@ function Application(props){
     <div className="scoreboard">
       <Header title={props.title} />
       <div className="players">
-        <Player name="Yanny Castrillon" score={31}/>
-      </div>
-      <div className="players">
-        <Player name="Alejandra Castrillon" score={34}/>
+        {props.players.map(function(player){
+          return <Player key={player.id} name={player.name} score={player.score} />
+        })}
       </div>
     </div>
   );
@@ -103,4 +130,4 @@ function Application(props){
 
 
 
-ReactDOM.render(<Application/>, document.getElementById('container'));
+ReactDOM.render(<Application players={PLAYERS}/>, document.getElementById('container'));
