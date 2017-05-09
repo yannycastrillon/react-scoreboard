@@ -21,6 +21,72 @@ var PLAYERS = [
   },
 ];
 
+const Stopwatch = React.createClass({
+
+  getInitialState: function() {
+    return {
+      running: false,
+      elapseTime: 0,
+      previousTime: 0,
+    }
+  },
+
+  /*
+   * It will be call as soon as the component is mount on the page.
+   * It is useful when DATA Fetching or Timers.
+  */
+  componentDidMount: function () {
+    this.interval = setInterval(this.onTick,100);
+  },
+
+  componentWillUnmount: function () {
+    clearInterval(this.interval);
+  },
+
+  onTick: function () {
+    if (this.state.running) {
+      let now = Date.now()
+      this.setState({
+        previousTime: now,
+        // To calculate elapseTime
+        elapseTime: this.state.elapseTime + (now - this.state.previousTime),
+      })
+    }
+  },
+
+  onStart: function() {
+    this.setState({
+      running: true,
+      previousTime: Date.now(),
+    });
+  },
+
+  onStop: function(){
+    this.setState({running: false});
+  },
+
+
+  onReset: function() {
+    this.setState({
+      elapseTime: 0,
+      previousTime: Date.now(),
+    })
+  },
+
+  render: function() {
+    let seconds = Math.floor(this.state.elapseTime / 1000);
+    return(
+      <div className="stopwatch">
+        <h2>Stopwatch</h2>
+        <div className="stopwatch-time">{seconds}</div>
+        { this.state.running ? <button onClick={this.onStop}>Stop</button> : <button onClick={this.onStart}>Start</button> }
+        <button onClick={this.onReset}>Reset</button>
+      </div>
+    )
+  }
+})
+
+
 // Component in charge of adding a new component.
 const AddPlayerForm = React.createClass({
   getInitialState:function() {
@@ -67,6 +133,7 @@ function Header(props){
     <div className="header">
       <Stats players={props.players}/>
       <h1>{props.title}</h1>
+      <Stopwatch>0</Stopwatch>
     </div>
   );
 }
